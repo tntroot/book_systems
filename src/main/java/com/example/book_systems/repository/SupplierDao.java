@@ -15,7 +15,7 @@ public interface SupplierDao extends JpaRepository<Supplier, String> {
 	public List<Supplier> findAll();
 	
 	@Query("select count(serial_num) from supplier")
-	public List<Supplier> findCount();
+	public int findCount();
 	
 //	@Modifying
 //	@Transactional
