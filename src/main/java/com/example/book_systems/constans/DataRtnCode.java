@@ -5,7 +5,10 @@ public enum DataRtnCode {
 	SUCCESSFUL("200","成功"),
 	DATA_NOT_FOUND("400","查無資料"),
 	DATA_ERROR("400","資料錯誤"),
-	INPUT_NULL("400","輸入欄位不可為空");
+	INPUT_NULL("400","輸入欄位不可為空"),
+	INSERT_DATA("400","新增資料錯誤"),
+	INSERT_REPEAT_DATA("400","無法新增重複資料"),
+	UPDATE_ERROR("400","更新錯誤");
 	
 	private String code;
 

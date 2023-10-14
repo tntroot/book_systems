@@ -31,22 +31,28 @@ public class Supplier {
 	private String phone;
 	
 	// 位置
-	@Column(name = "location")
-	private String location;
+	@Column(name = "location_id")
+	private String location_id;
+	
+	// 詳細位置
+	@Column(name = "location_name")
+	private String location_name;
 
 	public Supplier() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Supplier(String serial_num, String name, int compiled, String email, String phone, String location) {
+	public Supplier(String serial_num, String name, int compiled, String email, String phone, String location_id,
+			String location_name) {
 		super();
 		this.serial_num = serial_num;
 		this.name = name;
 		this.compiled = compiled;
 		this.email = email;
 		this.phone = phone;
-		this.location = location;
+		this.location_id = location_id;
+		this.location_name = location_name;
 	}
 
 	public String getSerial_num() {
@@ -89,13 +95,21 @@ public class Supplier {
 		this.phone = phone;
 	}
 
-	public String getLocation() {
-		return location;
+	public String getLocation_id() {
+		return location_id;
 	}
 
-	public void setLocation(String location) {
-		this.location = location;
+	public void setLocation_id(String location_id) {
+		this.location_id = location_id;
 	}
+
+	public String getLocation_name() {
+		return location_name;
+	}
+
+	public void setLocation_name(String location_name) {
+		this.location_name = location_name;
+	}	
 	
 	
 }
