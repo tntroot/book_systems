@@ -1,51 +1,37 @@
 package com.example.book_systems.entity;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
-@Entity
-@Table(name = "user")
-public class User {
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-	@Id
-	@Column(name = "account")
+@JsonIgnoreProperties(value = { "pwd" })
+public class UserShow {
+
 	private String account;
 	
-	@Column(name = "user_name")
 	private String user_name;
 	
-	@Column(name = "email")
 	private String email;
 	
-	@Column(name = "pwd")
-	private String pwd;
+	private LocalDateTime born;
 	
-	@Column(name = "born")
-	private LocalDate born;
-	
-	@Column(name = "redate")
 	private LocalDateTime redate;
 	
-	@Column(name = "locked_status")
 	private int locked_status;
 
-	public User() {
+	public UserShow() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public User(String account, String user_name, String email, String pwd, LocalDate born, LocalDateTime redate,
+	public UserShow(String account, String user_name, String email, LocalDateTime born, LocalDateTime redate,
 			int locked_status) {
 		super();
 		this.account = account;
 		this.user_name = user_name;
 		this.email = email;
-		this.pwd = pwd;
 		this.born = born;
 		this.redate = redate;
 		this.locked_status = locked_status;
@@ -75,19 +61,11 @@ public class User {
 		this.email = email;
 	}
 
-	public String getPwd() {
-		return pwd;
-	}
-
-	public void setPwd(String pwd) {
-		this.pwd = pwd;
-	}
-
-	public LocalDate getBorn() {
+	public LocalDateTime getBorn() {
 		return born;
 	}
 
-	public void setBorn(LocalDate born) {
+	public void setBorn(LocalDateTime born) {
 		this.born = born;
 	}
 
