@@ -26,7 +26,7 @@ public class User {
 	private String pwd;
 	
 	@Column(name = "born")
-	private LocalDate born;
+	private LocalDateTime born;
 	
 	@Column(name = "redate")
 	private LocalDateTime redate;
@@ -39,7 +39,7 @@ public class User {
 		// TODO Auto-generated constructor stub
 	}
 
-	public User(String account, String user_name, String email, String pwd, LocalDate born, LocalDateTime redate,
+	public User(String account, String user_name, String email, String pwd, LocalDateTime born, LocalDateTime redate,
 			int locked_status) {
 		super();
 		this.account = account;
@@ -83,11 +83,11 @@ public class User {
 		this.pwd = pwd;
 	}
 
-	public LocalDate getBorn() {
+	public LocalDateTime getBorn() {
 		return born;
 	}
 
-	public void setBorn(LocalDate born) {
+	public void setBorn(LocalDateTime born) {
 		this.born = born;
 	}
 

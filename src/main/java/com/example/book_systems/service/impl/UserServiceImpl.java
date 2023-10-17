@@ -2,6 +2,7 @@ package com.example.book_systems.service.impl;
 
 import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
@@ -24,6 +25,11 @@ import com.example.book_systems.service.ifs.UserService;
 import com.example.book_systems.vo.requery.ForgotPwdReq;
 import com.example.book_systems.vo.respone.MsgRes;
 import com.example.book_systems.vo.respone.UserRespone;
+import com.example.book_systems.vo.respone.UserShowRespone;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import net.bytebuddy.utility.RandomString;
 
@@ -60,7 +66,7 @@ public class UserServiceImpl implements UserService{
 			return new UserRespone(UserAndPersonInfoRtnCode.INPUT_MAPERROR.getCode(),"密碼 "+UserAndPersonInfoRtnCode.INPUT_MAPERROR.getMessage(),null);
 		}
 		
-		List<UserShow> userShows = userDao.findByEmail(user.getEmail());
+		List<User> userShows = userDao.findByEmail(user.getEmail());
 		if(!CollectionUtils.isEmpty(userShows)) {
 			return new UserRespone(UserAndPersonInfoRtnCode.EMAIL_EXISTS.getCode(),UserAndPersonInfoRtnCode.EMAIL_EXISTS.getMessage(),null);
 		}
@@ -85,6 +91,33 @@ public class UserServiceImpl implements UserService{
 		BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 		return encoder.matches(pwd, hashPass);
 	}
+	
+	@Override
+	public UserShowRespone login(String account, String pwd) {
+		
+		if(!StringUtils.hasText(account)||!StringUtils.hasText(pwd)) {
+			return new UserShowRespone(UserAndPersonInfoRtnCode.INPUT_ISNULL.getCode(),UserAndPersonInfoRtnCode.INPUT_ISNULL.getMessage(),null);
+		}
+		if(!userDao.existsById(account)) {
+			return new UserShowRespone(UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
+		}
+		Optional<User> thisAccount = userDao.findById(account);
+		if(thisAccount.isEmpty()) {
+			return new UserShowRespone(UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
+		}
+		if(!matchesPwdAndHashPass(pwd, thisAccount.get().getPwd())) {
+			return new UserShowRespone(UserAndPersonInfoRtnCode.ACCANDPWD_ERROR.getCode(),UserAndPersonInfoRtnCode.ACCANDPWD_ERROR.getMessage(),null);
+		}
+		
+		try {
+			UserShow userShow = userToUserShow(thisAccount.get());
+			return new UserShowRespone(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode(),UserAndPersonInfoRtnCode.SUCCESSFUL.getMessage(),userShow);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new UserShowRespone(UserAndPersonInfoRtnCode.DATA_ERROR.getCode(),e.getMessage(),null);
+		}
+	}
 
 
 	@Override
@@ -95,54 +128,42 @@ public class UserServiceImpl implements UserService{
 		}
 
 		// user not found
-		List<UserShow> userShows = userDao.findByEmail(email);
-		if(!CollectionUtils.isEmpty(userShows)) {
-			return new MsgRes(UserAndPersonInfoRtnCode.EMAIL_EXISTS.getCode(),UserAndPersonInfoRtnCode.EMAIL_EXISTS.getMessage());
+		List<User> userShows = userDao.findByEmail(email);
+		if(CollectionUtils.isEmpty(userShows)) {
+			return new MsgRes(UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getMessage());
 		}
 
-//					SimpleMailMessage message = new SimpleMailMessage();
-//					message.setFrom("javae7278@gmail.com");
-//					message.setTo(userEmail);
-//					message.setSubject("Speed接案網:重製密碼");
-//					
-//					String content = "<p>你好, </p>"
-//					            + "<p>您已要求重新設定密碼</p>"
-//					            + "<p>驗證碼:</p>"
-//					            + "<p>" + token + "</p>"
-//					            + "<br>"
-//					            + "<p>驗證碼有效時間為10分鐘</p>"
-//					            + "<p>感謝您使用Speed接案網</p>";
-//					
-//					message.setText(content);
-//					
-//					// send to user email
-//					mailSender.send(message);
 
 		MimeMessage message = mailSender.createMimeMessage();
 		MimeMessageHelper helper = new MimeMessageHelper(message);
-
-		try {
-			helper.setFrom("cherhorn538@gmail.com", "圖書管理系統");
-			helper.setTo(email);
-	
-			String subject = "已要求重新設定密碼";
-	
-			String content = "<p>你好, </p>" + "<p>您已要求重新設定密碼</p>" + "<p>驗證碼:</p>" + "<p>" + token + "</p>" + "<br>"
-					+ "<p>驗證碼有效時間為10分鐘</p>" + "<p>感謝您使用 圖書管理系統</p>";
-	
-			helper.setSubject(subject);
-	
-			helper.setText(content, true);
-	
-			// send to user email
-			mailSender.send(message);
-		} catch (UnsupportedEncodingException | MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
+		
+		helper.setFrom("cherhorn538@gmail.com", "圖書管理系統");
+		helper.setTo(email);
+
+		String subject = "已要求重新設定密碼";
+
+		String content = "<p>你好, </p>" + "<p>您已要求重新設定密碼</p>" + "<p>驗證碼:</p>" + "<p>" + token + "</p>" + "<br>"
+				+ "<p>驗證碼有效時間為10分鐘</p>" + "<p>感謝您使用 圖書管理系統</p>";
+
+		helper.setSubject(subject);
+
+		helper.setText(content, true);
+
+		// send to user email
+		mailSender.send(message);	
 
 		return new MsgRes(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode(), UserAndPersonInfoRtnCode.SUCCESSFUL.getMessage());
+	}
+	
+	private UserShow userToUserShow(User user) throws Exception {
+		ObjectMapper mapper = new ObjectMapper();
+		
+		// jackson 不支持時間類型，需而外引入
+		mapper.registerModule(new JavaTimeModule());
+		
+		String json = mapper.writeValueAsString(user);
+		return mapper.readValue(json,UserShow.class);
 	}
 
 }
