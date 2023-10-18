@@ -31,9 +31,11 @@ public class LoginAspect {
 	// execution 方法執行時觸發、*(返回 Response 任意型態)、controller package 路徑、
 	// .*(回傳 Requery 任意型態)、.*(..)(任意方法，任意參數(兩個點))
 	@Pointcut("execution (public * com.example.book_systems.controller.*.*(..)) && "
-			+ "!execution (public * com.example.book_systems.controller.*.login(..)) "
-			+ "!execution (public * com.example.book_systems.controller.*.forget(..)) "
-			+ "!execution (public * com.example.book_systems.controller.*.sign(..)) ")
+			+ "!execution (public * com.example.book_systems.controller.*.login(..)) && "
+			+ "!execution (public * com.example.book_systems.controller.*.forget(..)) && "
+			+ "!execution (public * com.example.book_systems.controller.*.sign(..)) && "
+			+ "!execution (public * com.example.book_systems.controller.*.checkPwdToken(..)) && "
+			+ "!execution (public * com.example.book_systems.controller.*.replacePwd(..)) ")
 	public void pointcut() {
 		
 	}

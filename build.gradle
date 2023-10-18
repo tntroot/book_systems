@@ -29,6 +29,10 @@ dependencies {
 	// Spring Boot Starter Mail
 	implementation 'org.springframework.boot:spring-boot-starter-mail'
 	
+	// jackson-datatype-jsr310
+	// jackson 不支持時間類型，需而外引入
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3'
+	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

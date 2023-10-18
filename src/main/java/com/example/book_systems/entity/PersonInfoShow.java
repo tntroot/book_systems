@@ -1,5 +1,6 @@
 package com.example.book_systems.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -15,7 +16,7 @@ private String id;
 	private String user_name;
 	
 	// 出生日期
-	private LocalDateTime born;
+	private LocalDate born;
 	
 	// 權限
 	private int manager;
@@ -31,7 +32,7 @@ private String id;
 		// TODO Auto-generated constructor stub
 	}
 
-	public PersonInfoShow(String id, String email, String user_name, LocalDateTime born, int manager,
+	public PersonInfoShow(String id, String email, String user_name, LocalDate born, int manager,
 			LocalDateTime redate, int locked_status) {
 		super();
 		this.id = id;
@@ -67,11 +68,11 @@ private String id;
 		this.user_name = user_name;
 	}
 
-	public LocalDateTime getBorn() {
+	public LocalDate getBorn() {
 		return born;
 	}
 
-	public void setBorn(LocalDateTime born) {
+	public void setBorn(LocalDate born) {
 		this.born = born;
 	}
 

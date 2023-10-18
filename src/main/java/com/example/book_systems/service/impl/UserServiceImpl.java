@@ -66,8 +66,8 @@ public class UserServiceImpl implements UserService{
 			return new UserRespone(UserAndPersonInfoRtnCode.INPUT_MAPERROR.getCode(),"密碼 "+UserAndPersonInfoRtnCode.INPUT_MAPERROR.getMessage(),null);
 		}
 		
-		List<User> userShows = userDao.findByEmail(user.getEmail());
-		if(!CollectionUtils.isEmpty(userShows)) {
+		Optional<User> userShows = userDao.findByEmail(user.getEmail());
+		if(!userShows.isEmpty()) {
 			return new UserRespone(UserAndPersonInfoRtnCode.EMAIL_EXISTS.getCode(),UserAndPersonInfoRtnCode.EMAIL_EXISTS.getMessage(),null);
 		}
 		if(userDao.existsById(user.getAccount())) {
@@ -128,8 +128,8 @@ public class UserServiceImpl implements UserService{
 		}
 
 		// user not found
-		List<User> userShows = userDao.findByEmail(email);
-		if(CollectionUtils.isEmpty(userShows)) {
+		Optional<User> userShows = userDao.findByEmail(email);
+		if(userShows.isEmpty()) {
 			return new MsgRes(UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getMessage());
 		}
 
@@ -156,6 +156,9 @@ public class UserServiceImpl implements UserService{
 		return new MsgRes(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode(), UserAndPersonInfoRtnCode.SUCCESSFUL.getMessage());
 	}
 	
+
+	
+	// 將查到的 User 資訊經過篩選複製到 UserShow
 	private UserShow userToUserShow(User user) throws Exception {
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -164,6 +167,26 @@ public class UserServiceImpl implements UserService{
 		
 		String json = mapper.writeValueAsString(user);
 		return mapper.readValue(json,UserShow.class);
+	}
+
+
+	@Override
+	public MsgRes replacePwd(String email, String newPwd) {
+		
+		 Optional<User> op = userDao.findByEmail(email);
+		
+		if(op.isEmpty()) {
+			return new MsgRes(UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getMessage());
+		}
+		
+		if(!StringUtils.hasText(newPwd) || !newPwd.matches(checkPwd)) {
+			return new MsgRes(UserAndPersonInfoRtnCode.INPUT_MAPERROR.getCode(),"密碼 "+UserAndPersonInfoRtnCode.INPUT_MAPERROR.getMessage());
+		}
+		
+		op.get().setPwd(encoderPwd(newPwd));
+		userDao.save(op.get());
+		
+		return new MsgRes(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode(),UserAndPersonInfoRtnCode.SUCCESSFUL.getMessage());
 	}
 
 }

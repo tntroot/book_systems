@@ -16,6 +16,7 @@ import com.example.book_systems.entity.User;
 import com.example.book_systems.service.ifs.UserService;
 import com.example.book_systems.vo.requery.ForgotPwdReq;
 import com.example.book_systems.vo.requery.LoginRequery;
+import com.example.book_systems.vo.requery.ReplacePwdRequery;
 import com.example.book_systems.vo.respone.MsgRes;
 import com.example.book_systems.vo.respone.UserRespone;
 import com.example.book_systems.vo.respone.UserShowRespone;
@@ -75,4 +76,36 @@ public class UserAndPersoninfoController {
 			return new MsgRes(UserAndPersonInfoRtnCode.INPUT_MAPERROR.getCode(),e.getMessage());
 		}
 	}
+	
+	@PostMapping(value = "forget/check_pwd_token")
+	public MsgRes checkPwdToken(@RequestBody ReplacePwdRequery pwdRequery, HttpSession http) {
+		
+		String token = (String) http.getAttribute("token");
+		if(!StringUtils.hasText(token)) {
+			return new MsgRes(UserAndPersonInfoRtnCode.TOKEN_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.TOKEN_NOT_FOUNT.getMessage());
+		}
+		
+		if(!token.equals(pwdRequery.getToken())) {
+			return new MsgRes(UserAndPersonInfoRtnCode.TOKEN_ERROR.getCode(),UserAndPersonInfoRtnCode.TOKEN_ERROR.getMessage());
+		}
+		
+		return new MsgRes(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode(),UserAndPersonInfoRtnCode.SUCCESSFUL.getMessage());
+	}
+	
+	@PostMapping(value = "forget/replacePwd")
+	public MsgRes replacePwd(@RequestBody ReplacePwdRequery pwdRequery, HttpSession http) {
+		
+		String email = (String) http.getAttribute("email");
+		if(StringUtils.hasText(email)) {
+			return new MsgRes(UserAndPersonInfoRtnCode.TOKEN_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.TOKEN_NOT_FOUNT.getMessage());
+		}
+		
+		MsgRes msgRes = userService.replacePwd(email, pwdRequery.getNewPwd());
+		if(msgRes.getCode().equals(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode())) {
+			http.invalidate();
+		}
+		
+		return msgRes;
+	}
+
 }

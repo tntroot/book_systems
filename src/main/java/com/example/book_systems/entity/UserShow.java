@@ -16,7 +16,7 @@ public class UserShow {
 	
 	private String email;
 	
-	private LocalDateTime born;
+	private LocalDate born;
 	
 	private LocalDateTime redate;
 	
@@ -27,7 +27,7 @@ public class UserShow {
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserShow(String account, String user_name, String email, LocalDateTime born, LocalDateTime redate,
+	public UserShow(String account, String user_name, String email, LocalDate born, LocalDateTime redate,
 			int locked_status) {
 		super();
 		this.account = account;
@@ -62,11 +62,11 @@ public class UserShow {
 		this.email = email;
 	}
 
-	public LocalDateTime getBorn() {
+	public LocalDate getBorn() {
 		return born;
 	}
 
-	public void setBorn(LocalDateTime born) {
+	public void setBorn(LocalDate born) {
 		this.born = born;
 	}
 

@@ -1,5 +1,6 @@
 package com.example.book_systems.entity;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import javax.persistence.Column;
@@ -30,7 +31,7 @@ public class PersonInfo {
 	
 	// 出生日期
 	@Column(name = "born")
-	private LocalDateTime born;
+	private LocalDate born;
 	
 	// 權限
 	@Column(name = "manager")
@@ -52,7 +53,7 @@ public class PersonInfo {
 	}
 	
 
-	public PersonInfo(String id, String email, String user_name, String pwd, LocalDateTime born, int manager,
+	public PersonInfo(String id, String email, String user_name, String pwd, LocalDate born, int manager,
 			LocalDateTime redate, int locked_status) {
 		super();
 		this.id = id;
@@ -99,11 +100,11 @@ public class PersonInfo {
 		this.pwd = pwd;
 	}
 
-	public LocalDateTime getBorn() {
+	public LocalDate getBorn() {
 		return born;
 	}
 
-	public void setBorn(LocalDateTime born) {
+	public void setBorn(LocalDate born) {
 		this.born = born;
 	}
 

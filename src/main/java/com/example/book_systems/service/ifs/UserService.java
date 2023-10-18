@@ -12,4 +12,6 @@ public interface UserService {
 	public UserShowRespone login(String account, String pwd);
 	
 	public MsgRes forgetPwd(String email, String token) throws Exception;
+	
+	public MsgRes replacePwd(String email, String newPwd);
 }
