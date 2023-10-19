@@ -67,6 +67,13 @@ public class UserAndPersoninfoController {
 		return userService.addUser(user);
 	}
 	
+	@GetMapping(value = "logout")
+	public UserRespone logout(HttpSession http) {
+		
+		http.invalidate();
+		return new UserRespone(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode(),UserAndPersonInfoRtnCode.SUCCESSFUL.getMessage(),null);
+	}
+	
 	@PostMapping(value = "forgetPwd")
 	public MsgRes forgotPwd(@RequestBody ForgotPwdReq req , HttpSession http) {
 		try {
