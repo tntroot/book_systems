@@ -8,6 +8,7 @@ import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpSession;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -46,6 +47,31 @@ public class UserServiceImpl implements UserService{
 	
 	@Autowired
 	private JavaMailSender mailSender;
+	
+
+	@Override
+	public UserShowRespone getBalance(String account) {
+		
+		if(!StringUtils.hasText(account)) {
+			return new UserShowRespone(UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
+		}
+		
+		Optional<User> op = userDao.findById(account);
+		if(op.isEmpty()) {
+			return new UserShowRespone(UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
+		}
+		
+		// BeanUtils.copyProperties(User.class,UserShow.class);
+		
+		try {
+			UserShow userShow = userToUserShow(op.get());
+			return new UserShowRespone(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode(),UserAndPersonInfoRtnCode.SUCCESSFUL.getMessage(),userShow);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return new UserShowRespone(UserAndPersonInfoRtnCode.DATA_ERROR.getCode(),e.getMessage(),null);
+		}
+	}
 
 	@Override
 	public UserRespone addUser(User user) {
@@ -108,6 +134,10 @@ public class UserServiceImpl implements UserService{
 		if(!matchesPwdAndHashPass(pwd, thisAccount.get().getPwd())) {
 			return new UserShowRespone(UserAndPersonInfoRtnCode.ACCANDPWD_ERROR.getCode(),UserAndPersonInfoRtnCode.ACCANDPWD_ERROR.getMessage(),null);
 		}
+		
+		// Copy 另一種寫法，UserShow entity 可以不加 JsonIgnoreProperties 註釋(Annotation)
+		// 將 User entity 複製到 UserShow entity
+		// BeanUtils.copyProperties(thisAccount.get(), UserShow.class);
 		
 		try {
 			UserShow userShow = userToUserShow(thisAccount.get());

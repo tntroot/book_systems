@@ -30,6 +30,17 @@ public class UserAndPersoninfoController {
 	
 	@Autowired
 	private UserService userService;
+	
+	@GetMapping(value = "getBalance")
+	private UserShowRespone getBalance(HttpSession http) {
+		
+		String account = (String) http.getAttribute("account");
+		if(!StringUtils.hasText(account)) {
+			return new UserShowRespone(UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
+		}
+		
+		return userService.getBalance(account);	
+	}
 
 	@PostMapping(value = "login")
 	public UserShowRespone login(@RequestBody LoginRequery loginRequery, HttpSession http) {
@@ -39,14 +50,14 @@ public class UserAndPersoninfoController {
 			return res;
 		}
 		
-		if(res.getCode().equals(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode())) {
+		if(!res.getCode().equals(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode())) {
 			return res;
 		}
 		
 		http.setAttribute("account", loginRequery.getAccount());
 		http.setAttribute("pwd", loginRequery.getPwd());
 		
-		http.setMaxInactiveInterval(60*60*24*7);
+		http.setMaxInactiveInterval(20);
 		
 		return res;
 	}

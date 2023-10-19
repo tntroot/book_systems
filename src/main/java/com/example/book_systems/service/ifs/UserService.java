@@ -14,4 +14,6 @@ public interface UserService {
 	public MsgRes forgetPwd(String email, String token) throws Exception;
 	
 	public MsgRes replacePwd(String email, String newPwd);
+	
+	public UserShowRespone getBalance(String account);
 }
