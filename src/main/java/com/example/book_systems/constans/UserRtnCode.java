@@ -1,6 +1,6 @@
 package com.example.book_systems.constans;
 
-public enum UserAndPersonInfoRtnCode {
+public enum UserRtnCode {
 
 	SUCCESSFUL("200","成功"),
 	INPUT_ISNULL("400","尚有欄位未輸入"),
@@ -19,7 +19,7 @@ public enum UserAndPersonInfoRtnCode {
 	
 	private String message;
 
-	private UserAndPersonInfoRtnCode(String code, String message) {
+	private UserRtnCode(String code, String message) {
 		this.code = code;
 		this.message = message;
 	}

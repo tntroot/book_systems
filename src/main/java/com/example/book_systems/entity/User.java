@@ -12,25 +12,36 @@ import javax.persistence.Table;
 @Table(name = "user")
 public class User {
 
+	// 帳號/員工帳號
 	@Id
 	@Column(name = "account")
 	private String account;
 	
+	// 名稱
 	@Column(name = "user_name")
 	private String user_name;
 	
+	// 信箱
 	@Column(name = "email")
 	private String email;
 	
+	// 密碼
 	@Column(name = "pwd")
 	private String pwd;
 	
+	// 生日
 	@Column(name = "born")
 	private LocalDate born;
 	
+	// 權限
+	@Column(name = "manager")
+	private int manager;
+	
+	// 註冊日期
 	@Column(name = "redate")
 	private LocalDateTime redate;
 	
+	// 鎖定狀態
 	@Column(name = "locked_status")
 	private int locked_status;
 
@@ -39,14 +50,15 @@ public class User {
 		// TODO Auto-generated constructor stub
 	}
 
-	public User(String account, String user_name, String email, String pwd, LocalDate born, LocalDateTime redate,
-			int locked_status) {
+	public User(String account, String user_name, String email, String pwd, LocalDate born, int manager,
+			LocalDateTime redate, int locked_status) {
 		super();
 		this.account = account;
 		this.user_name = user_name;
 		this.email = email;
 		this.pwd = pwd;
 		this.born = born;
+		this.manager = manager;
 		this.redate = redate;
 		this.locked_status = locked_status;
 	}
@@ -91,6 +103,14 @@ public class User {
 		this.born = born;
 	}
 
+	public int getManager() {
+		return manager;
+	}
+
+	public void setManager(int manager) {
+		this.manager = manager;
+	}
+
 	public LocalDateTime getRedate() {
 		return redate;
 	}
@@ -108,4 +128,5 @@ public class User {
 	}
 	
 	
+
 }

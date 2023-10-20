@@ -1,11 +1,12 @@
-CREATE DATABASE IF NOT EXISTS `book_systems`;
+CREATE SCHEMA IF NOT EXISTS `book_systems`;
 
 CREATE TABLE IF NOT EXISTS `user`(
   `account` varchar(20) NOT NULL,
   `user_name` varchar(45) NOT NULL,
   `email` varchar(45) NOT NULL,
   `pwd` varchar(100) NOT NULL,
-  `born` datetime DEFAULT NULL,
+  `born` date NOT NULL,
+  `manager` int DEFAULT '2',
   `redate` datetime DEFAULT NULL,
   `locked_status` int DEFAULT '0',
   PRIMARY KEY (`account`)

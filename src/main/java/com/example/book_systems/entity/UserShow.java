@@ -18,6 +18,8 @@ public class UserShow {
 	
 	private LocalDate born;
 	
+	private int manager;
+	
 	private LocalDateTime redate;
 	
 	private int locked_status;
@@ -27,13 +29,14 @@ public class UserShow {
 		// TODO Auto-generated constructor stub
 	}
 
-	public UserShow(String account, String user_name, String email, LocalDate born, LocalDateTime redate,
+	public UserShow(String account, String user_name, String email, LocalDate born, int manager, LocalDateTime redate,
 			int locked_status) {
 		super();
 		this.account = account;
 		this.user_name = user_name;
 		this.email = email;
 		this.born = born;
+		this.manager = manager;
 		this.redate = redate;
 		this.locked_status = locked_status;
 	}
@@ -70,6 +73,14 @@ public class UserShow {
 		this.born = born;
 	}
 
+	public int getManager() {
+		return manager;
+	}
+
+	public void setManager(int manager) {
+		this.manager = manager;
+	}
+
 	public LocalDateTime getRedate() {
 		return redate;
 	}
@@ -85,6 +96,7 @@ public class UserShow {
 	public void setLocked_status(int locked_status) {
 		this.locked_status = locked_status;
 	}
+
 	
 	
 }

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.book_systems.constans.UserAndPersonInfoRtnCode;
+import com.example.book_systems.constans.UserRtnCode;
 import com.example.book_systems.entity.User;
 import com.example.book_systems.service.ifs.UserService;
 import com.example.book_systems.vo.requery.ForgotPwdReq;
@@ -26,7 +26,7 @@ import net.bytebuddy.utility.RandomString;
 @RestController
 @CrossOrigin
 @RequestMapping("book_systems")
-public class UserAndPersoninfoController {
+public class UserController {
 	
 	@Autowired
 	private UserService userService;
@@ -36,7 +36,7 @@ public class UserAndPersoninfoController {
 		
 		String account = (String) http.getAttribute("account");
 		if(!StringUtils.hasText(account)) {
-			return new UserShowRespone(UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
+			return new UserShowRespone(UserRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
 		}
 		
 		return userService.getBalance(account);	
@@ -50,14 +50,14 @@ public class UserAndPersoninfoController {
 			return res;
 		}
 		
-		if(!res.getCode().equals(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode())) {
+		if(!res.getCode().equals(UserRtnCode.SUCCESSFUL.getCode())) {
 			return res;
 		}
 		
 		http.setAttribute("account", loginRequery.getAccount());
 		http.setAttribute("pwd", loginRequery.getPwd());
 		
-		http.setMaxInactiveInterval(20);
+		http.setMaxInactiveInterval(60*60*24*7);
 		
 		return res;
 	}
@@ -71,7 +71,7 @@ public class UserAndPersoninfoController {
 	public UserRespone logout(HttpSession http) {
 		
 		http.invalidate();
-		return new UserRespone(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode(),UserAndPersonInfoRtnCode.SUCCESSFUL.getMessage(),null);
+		return new UserRespone(UserRtnCode.SUCCESSFUL.getCode(),UserRtnCode.SUCCESSFUL.getMessage(),null);
 	}
 	
 	@PostMapping(value = "forgetPwd")
@@ -91,7 +91,7 @@ public class UserAndPersoninfoController {
 			
 			return res;
 		} catch (Exception e) {
-			return new MsgRes(UserAndPersonInfoRtnCode.INPUT_MAPERROR.getCode(),e.getMessage());
+			return new MsgRes(UserRtnCode.INPUT_MAPERROR.getCode(),e.getMessage());
 		}
 	}
 	
@@ -100,14 +100,14 @@ public class UserAndPersoninfoController {
 		
 		String token = (String) http.getAttribute("token");
 		if(!StringUtils.hasText(token)) {
-			return new MsgRes(UserAndPersonInfoRtnCode.TOKEN_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.TOKEN_NOT_FOUNT.getMessage());
+			return new MsgRes(UserRtnCode.TOKEN_NOT_FOUNT.getCode(),UserRtnCode.TOKEN_NOT_FOUNT.getMessage());
 		}
 		
 		if(!token.equals(pwdRequery.getToken())) {
-			return new MsgRes(UserAndPersonInfoRtnCode.TOKEN_ERROR.getCode(),UserAndPersonInfoRtnCode.TOKEN_ERROR.getMessage());
+			return new MsgRes(UserRtnCode.TOKEN_ERROR.getCode(),UserRtnCode.TOKEN_ERROR.getMessage());
 		}
 		
-		return new MsgRes(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode(),UserAndPersonInfoRtnCode.SUCCESSFUL.getMessage());
+		return new MsgRes(UserRtnCode.SUCCESSFUL.getCode(),UserRtnCode.SUCCESSFUL.getMessage());
 	}
 	
 	@PostMapping(value = "forget/replacePwd")
@@ -115,11 +115,11 @@ public class UserAndPersoninfoController {
 		
 		String email = (String) http.getAttribute("email");
 		if(StringUtils.hasText(email)) {
-			return new MsgRes(UserAndPersonInfoRtnCode.TOKEN_NOT_FOUNT.getCode(),UserAndPersonInfoRtnCode.TOKEN_NOT_FOUNT.getMessage());
+			return new MsgRes(UserRtnCode.TOKEN_NOT_FOUNT.getCode(),UserRtnCode.TOKEN_NOT_FOUNT.getMessage());
 		}
 		
 		MsgRes msgRes = userService.replacePwd(email, pwdRequery.getNewPwd());
-		if(msgRes.getCode().equals(UserAndPersonInfoRtnCode.SUCCESSFUL.getCode())) {
+		if(msgRes.getCode().equals(UserRtnCode.SUCCESSFUL.getCode())) {
 			http.invalidate();
 		}
 		
