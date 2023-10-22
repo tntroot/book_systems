@@ -101,6 +101,7 @@ public class UserServiceImpl implements UserService{
 		}
 		
 		user.setPwd(encoderPwd(user.getPwd()));
+		user.setManager(2);
 		userDao.save(user);
 		
 		return new UserRespone(UserRtnCode.SUCCESSFUL.getCode(),UserRtnCode.SUCCESSFUL.getMessage(),null);
