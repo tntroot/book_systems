@@ -16,4 +16,8 @@ public interface UserService {
 	public MsgRes replacePwd(String email, String newPwd);
 	
 	public UserShowRespone getBalance(String account);
+	
+	public UserShowRespone editUser(User user);
+	
+	public MsgRes editPwd(String account, String oldPwd, String newPwd);
 }

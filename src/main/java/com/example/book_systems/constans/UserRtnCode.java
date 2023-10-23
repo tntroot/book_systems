@@ -9,8 +9,12 @@ public enum UserRtnCode {
 	ACCOUNT_NOT_FOUNT("400","找不到帳戶"),
 	ACCOUNT_EXISTS("400","帳號已存在"),
 	EMAIL_EXISTS("400","email 已存在"),
+	EMAIL_UN_SUCCESSFUL("400","檢測到此 email 發生變動，將禁止變更"),
 	ACCANDPWD_ERROR("400","帳號密碼輸入錯誤"),
 	ACCOUNT_NOT_LOGIN("400","帳號未登入"),
+	PASSWORK_OLD_ERROR("400","舊密碼與原始密碼不相同"),
+	PASSWORK_NEW_MAPERROR("400","新密碼格式錯誤"),
+	PASSWORK_NEWANDOLD_EQUAL("400","新密碼不可與舊密碼相同"),
 	DATA_ERROR("400","資料錯誤"),
 	TOKEN_NOT_FOUNT("400","無此驗證碼或驗證碼已超時"),
 	TOKEN_ERROR("400","驗證碼錯誤");

@@ -1,38 +1,26 @@
 package com.example.book_systems.service.impl;
 
-import java.io.UnsupportedEncodingException;
-import java.util.List;
 import java.util.Optional;
 
-import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
-import javax.servlet.http.HttpSession;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.example.book_systems.constans.UserRtnCode;
 import com.example.book_systems.entity.User;
 import com.example.book_systems.entity.UserShow;
 import com.example.book_systems.repository.UserDao;
 import com.example.book_systems.service.ifs.UserService;
-import com.example.book_systems.vo.requery.ForgotPwdReq;
 import com.example.book_systems.vo.respone.MsgRes;
 import com.example.book_systems.vo.respone.UserRespone;
 import com.example.book_systems.vo.respone.UserShowRespone;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-
-import net.bytebuddy.utility.RandomString;
 
 @Service
 public class UserServiceImpl implements UserService{
@@ -216,6 +204,75 @@ public class UserServiceImpl implements UserService{
 		
 		op.get().setPwd(encoderPwd(newPwd));
 		userDao.save(op.get());
+		
+		return new MsgRes(UserRtnCode.SUCCESSFUL.getCode(),UserRtnCode.SUCCESSFUL.getMessage());
+	}
+
+	@Override
+	public UserShowRespone editUser(User user) {
+		
+		if(user == null) {
+			return new UserShowRespone(UserRtnCode.INPUT_ISNULL.getCode(),UserRtnCode.INPUT_ISNULL.getMessage(),null);
+		}
+		
+		if(!StringUtils.hasText(user.getAccount()) || 
+				user.getBorn()==null || 
+				!StringUtils.hasText(user.getUser_name())) {
+			return new UserShowRespone(UserRtnCode.INPUT_ISNULL.getCode(),UserRtnCode.INPUT_ISNULL.getMessage(),null);
+		}
+		
+		Optional<User> op = userDao.findById(user.getAccount());
+		if(op.isEmpty()) {
+			return new UserShowRespone(UserRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
+		}
+//		if(!op.get().getEmail().equals(user.getEmail())) {
+//			return new UserShowRespone(UserRtnCode.EMAIL_UN_SUCCESSFUL.getCode(),UserRtnCode.EMAIL_UN_SUCCESSFUL.getMessage(),null);
+//		}
+		User thisEditUser = op.get();
+		thisEditUser.setBorn(user.getBorn());
+		thisEditUser.setUser_name(user.getUser_name());
+		
+//		user.setPwd(op.get().getPwd());
+//		user.setRedate(op.get().getRedate());
+//		user.setManager(op.get().getManager());
+		
+		userDao.save(thisEditUser);
+		
+		try {
+			UserShow userShow = userToUserShow(thisEditUser);
+			return new UserShowRespone(UserRtnCode.SUCCESSFUL.getCode(),UserRtnCode.SUCCESSFUL.getMessage(),userShow);			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new UserShowRespone(UserRtnCode.DATA_ERROR.getCode(),e.getMessage(),null);
+		}
+	}
+
+	@Override
+	public MsgRes editPwd(String account, String oldPwd, String newPwd) {
+		
+		if(!StringUtils.hasText(account) || !StringUtils.hasText(oldPwd) || !StringUtils.hasText(newPwd)) {
+			return new MsgRes(UserRtnCode.INPUT_ISNULL.getCode(),UserRtnCode.INPUT_ISNULL.getMessage());
+		}
+		
+		Optional<User> op = userDao.findById(account);
+		if(op.isEmpty()) {
+			return new MsgRes(UserRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserRtnCode.ACCOUNT_NOT_FOUNT.getMessage());
+		}
+		if(!matchesPwdAndHashPass(oldPwd, op.get().getPwd())) {
+			return new MsgRes(UserRtnCode.PASSWORK_OLD_ERROR.getCode(),UserRtnCode.PASSWORK_OLD_ERROR.getMessage());
+		}
+		if(!newPwd.matches(checkPwd)) {
+			return new MsgRes(UserRtnCode.PASSWORK_NEW_MAPERROR.getCode(),UserRtnCode.PASSWORK_NEW_MAPERROR.getMessage());
+		}
+		if(matchesPwdAndHashPass(newPwd, op.get().getPwd())) {
+			return new MsgRes(UserRtnCode.PASSWORK_NEWANDOLD_EQUAL.getCode(),UserRtnCode.PASSWORK_NEWANDOLD_EQUAL.getMessage());
+		}
+		
+		User user = op.get();
+		user.setPwd(encoderPwd(newPwd));
+		userDao.save(user);
+		
+		System.out.println(matchesPwdAndHashPass(newPwd, user.getPwd()));
 		
 		return new MsgRes(UserRtnCode.SUCCESSFUL.getCode(),UserRtnCode.SUCCESSFUL.getMessage());
 	}
