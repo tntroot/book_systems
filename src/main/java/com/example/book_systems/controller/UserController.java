@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.book_systems.constans.UserRtnCode;
 import com.example.book_systems.entity.User;
 import com.example.book_systems.service.ifs.UserService;
-import com.example.book_systems.vo.requery.ForgotPwdReq;
 import com.example.book_systems.vo.requery.LoginRequery;
 import com.example.book_systems.vo.requery.ReplacePwdRequery;
 import com.example.book_systems.vo.requery.UserChangePwdRequery;
@@ -76,7 +75,7 @@ public class UserController {
 	}
 	
 	@PostMapping(value = "forgetPwd")
-	public MsgRes forgotPwd(@RequestBody ForgotPwdReq req , HttpSession http) {
+	public MsgRes forgotPwd(@RequestBody ReplacePwdRequery req , HttpSession http) {
 		try {
 			String token = RandomString.make(20);
 			
@@ -99,7 +98,7 @@ public class UserController {
 	@PostMapping(value = "forget/check_pwd_token")
 	public MsgRes checkPwdToken(@RequestBody ReplacePwdRequery pwdRequery, HttpSession http) {
 		
-		String token = (String) http.getAttribute("token");
+		String token = (String) http.getAttribute("resetPwdToken");
 		if(!StringUtils.hasText(token)) {
 			return new MsgRes(UserRtnCode.TOKEN_NOT_FOUNT.getCode(),UserRtnCode.TOKEN_NOT_FOUNT.getMessage());
 		}
@@ -115,8 +114,8 @@ public class UserController {
 	public MsgRes replacePwd(@RequestBody ReplacePwdRequery pwdRequery, HttpSession http) {
 		
 		String email = (String) http.getAttribute("email");
-		if(StringUtils.hasText(email)) {
-			return new MsgRes(UserRtnCode.TOKEN_NOT_FOUNT.getCode(),UserRtnCode.TOKEN_NOT_FOUNT.getMessage());
+		if(!StringUtils.hasText(email)) {
+			return new MsgRes(UserRtnCode.TOKEN_CHECK.getCode(),UserRtnCode.TOKEN_CHECK.getMessage());
 		}
 		
 		MsgRes msgRes = userService.replacePwd(email, pwdRequery.getNewPwd());

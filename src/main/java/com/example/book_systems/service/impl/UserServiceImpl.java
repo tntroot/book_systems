@@ -143,7 +143,7 @@ public class UserServiceImpl implements UserService{
 	public MsgRes forgetPwd(String email, String token) throws Exception{
 		// input is null & check input format
 		if (!StringUtils.hasText(email) || !email.matches(checkEmail)) {
-			return new MsgRes(UserRtnCode.EMAIL_EXISTS.getCode(), UserRtnCode.EMAIL_EXISTS.getMessage());
+			return new MsgRes(UserRtnCode.INPUT_MAPERROR.getCode(), "Email "+UserRtnCode.INPUT_MAPERROR.getMessage());
 		}
 
 		// user not found
@@ -157,13 +157,13 @@ public class UserServiceImpl implements UserService{
 		MimeMessageHelper helper = new MimeMessageHelper(message);
 		
 		
-		helper.setFrom("cherhorn538@gmail.com", "圖書管理系統");
+		helper.setFrom("cherhorn538@gmail.com", "書海經");
 		helper.setTo(email);
 
 		String subject = "已要求重新設定密碼";
 
 		String content = "<p>你好, </p>" + "<p>您已要求重新設定密碼</p>" + "<p>驗證碼:</p>" + "<p>" + token + "</p>" + "<br>"
-				+ "<p>驗證碼有效時間為10分鐘</p>" + "<p>感謝您使用 圖書管理系統</p>";
+				+ "<p>驗證碼有效時間為10分鐘</p>" + "<p>感謝您使用 書海經</p>";
 
 		helper.setSubject(subject);
 
@@ -195,11 +195,15 @@ public class UserServiceImpl implements UserService{
 		 Optional<User> op = userDao.findByEmail(email);
 		
 		if(op.isEmpty()) {
-			return new MsgRes(UserRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserRtnCode.ACCOUNT_NOT_FOUNT.getMessage());
+			return new MsgRes(UserRtnCode.TOKEN_CHECK.getCode(),UserRtnCode.TOKEN_CHECK.getMessage());
 		}
 		
 		if(!StringUtils.hasText(newPwd) || !newPwd.matches(checkPwd)) {
 			return new MsgRes(UserRtnCode.INPUT_MAPERROR.getCode(),"密碼 "+UserRtnCode.INPUT_MAPERROR.getMessage());
+		}
+		
+		if(matchesPwdAndHashPass(newPwd, op.get().getPwd())) {
+			return new MsgRes(UserRtnCode.PASSWORK_NEWANDOLD_EQUAL.getCode(),UserRtnCode.PASSWORK_NEWANDOLD_EQUAL.getMessage());
 		}
 		
 		op.get().setPwd(encoderPwd(newPwd));

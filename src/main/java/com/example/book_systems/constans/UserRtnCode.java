@@ -17,7 +17,8 @@ public enum UserRtnCode {
 	PASSWORK_NEWANDOLD_EQUAL("400","新密碼不可與舊密碼相同"),
 	DATA_ERROR("400","資料錯誤"),
 	TOKEN_NOT_FOUNT("400","無此驗證碼或驗證碼已超時"),
-	TOKEN_ERROR("400","驗證碼錯誤");
+	TOKEN_ERROR("400","驗證碼錯誤"),
+	TOKEN_CHECK("400","驗證超時");
 	
 	private String code;
 	
