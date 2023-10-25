@@ -20,6 +20,9 @@ import com.example.book_systems.vo.respone.SupplierRespone;
 @Service
 public class SupplierServiceImpl implements SupplierService{
 
+	private String checkEmail = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+	private String checkPhone = "^0[\\d]{9}";
+	
 	@Autowired
 	private SupplierDao supplierDao;
 	
@@ -36,16 +39,12 @@ public class SupplierServiceImpl implements SupplierService{
 	@Override
 	public SupplierRespone addSupplier(Supplier supplier) {
 		
-		if(supplier == null ) {
-			return new SupplierRespone(DataRtnCode.INPUT_NULL.getCode(),DataRtnCode.INPUT_NULL.getMessage(),null);
+		SupplierRespone respone = checkAddUpdateData(supplier);
+		if(!respone.getCode().equals("200")) {
+			return respone;
 		}
 		
-		List<String> arr = new ArrayList<>(Arrays.asList(supplier.getName(),supplier.getEmail(),supplier.getLocation_id(),supplier.getLocation_name(),supplier.getPhone()));
-		if (checkAddSupplier(arr) || supplier.getCompiled() == 0) {
-			return new SupplierRespone(DataRtnCode.INPUT_NULL.getCode(),DataRtnCode.INPUT_NULL.getMessage(),null);
-		}
-		
-		List<Supplier> thisSupplier = supplierDao.findByCompiled(supplier.getCompiled());
+		List<Supplier> thisSupplier = supplierDao.findByCompileds(supplier.getCompiled());
 		if(!CollectionUtils.isEmpty(thisSupplier)) {
 			return new SupplierRespone(DataRtnCode.INSERT_REPEAT_DATA.getCode(),DataRtnCode.INSERT_REPEAT_DATA.getMessage(),null);
 		}
@@ -55,24 +54,43 @@ public class SupplierServiceImpl implements SupplierService{
 			return new SupplierRespone(DataRtnCode.INSERT_DATA.getCode(),DataRtnCode.INSERT_DATA.getMessage(),null);
 		}
 		
-		thisSupplier = supplierDao.findByCompiled(supplier.getCompiled());
+		thisSupplier = supplierDao.findByCompileds(supplier.getCompiled());
 		
 		return new SupplierRespone(DataRtnCode.SUCCESSFUL.getCode(),DataRtnCode.SUCCESSFUL.getMessage(),thisSupplier);
 	}
-	public boolean checkAddSupplier(List<String> arr) {
-		for(String item:arr) {
-			if(!StringUtils.hasText(item)) {
-				return true;
-			}
+	
+	// 檢查更新/新增內容
+	private SupplierRespone checkAddUpdateData(Supplier supplier) {
+		
+		if(supplier == null ) {
+			return new SupplierRespone(DataRtnCode.INPUT_NULL.getCode(),DataRtnCode.INPUT_NULL.getMessage(),null);
 		}
-		return false;
+		
+		if (!StringUtils.hasText(supplier.getEmail()) || 
+				!StringUtils.hasText(supplier.getLocation_id()) || 
+				!StringUtils.hasText(supplier.getLocation_name()) || 
+				!StringUtils.hasText(supplier.getName()) || 
+				!StringUtils.hasText(supplier.getPhone()) || 
+				supplier.getCompiled() <= 0) {
+			return new SupplierRespone(DataRtnCode.INPUT_NULL.getCode(),DataRtnCode.INPUT_NULL.getMessage(),null);
+		}
+		
+		if(!supplier.getEmail().matches(checkEmail)) {
+			return new SupplierRespone(DataRtnCode.EMAIL_EXITS.getCode(),DataRtnCode.EMAIL_EXITS.getMessage(),null);
+		}
+		if(!supplier.getPhone().matches(checkPhone)) {
+			return new SupplierRespone(DataRtnCode.PHONE_EXITS.getCode(),DataRtnCode.PHONE_EXITS.getMessage(),null);
+		}
+		
+		return new SupplierRespone(DataRtnCode.SUCCESSFUL.getCode(),DataRtnCode.SUCCESSFUL.getMessage(),null);
 	}
 
 	@Override
 	public SupplierRespone updateSupplier(Supplier supplier) {
 		
-		if(supplier == null) {
-			return new SupplierRespone(DataRtnCode.UPDATE_ERROR.getCode(),DataRtnCode.UPDATE_ERROR.getMessage(),null);
+		SupplierRespone respone = checkAddUpdateData(supplier);
+		if(!respone.getCode().equals("200")) {
+			return respone;
 		}
 		
 		String oldSe_num = supplier.getSerial_num().substring(1, supplier.getSerial_num().length());

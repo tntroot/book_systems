@@ -1,6 +1,7 @@
 package com.example.book_systems.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.transaction.Transactional;
 
@@ -21,7 +22,7 @@ public interface SupplierDao extends JpaRepository<Supplier, String> {
 	// 透過 統編 查找
 	@Query(value = "select serial_num, `name`, compiled, email, phone, location_id, location_name"
 			+ " from supplier where compiled = :input_su_compiled ", nativeQuery = true)
-	public List<Supplier> findByCompiled(@Param("input_su_compiled") int su_compiled);
+	public List<Supplier> findByCompileds(@Param("input_su_compiled") int su_compiled);
 	
 	// 透過 id 查找
 	@Query(value = "select serial_num, `name`, compiled, email, phone, location_id, location_name"

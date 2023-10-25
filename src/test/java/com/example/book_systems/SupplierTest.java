@@ -20,7 +20,7 @@ public class SupplierTest {
 
 	@Test
 	public void addSupplierTest() {
-		List<Supplier> arr = supplierDao.findByCompiled(94563212);
+		List<Supplier> arr = supplierDao.findByCompileds(94563212);
 		System.out.println(arr);
 	}
 }

@@ -8,7 +8,7 @@ public class SupplierRespone{
 
 	private String code;
 	
-	private String mesage;
+	private String message;
 	
 	private List<Supplier> suppliers;
 
@@ -17,10 +17,10 @@ public class SupplierRespone{
 		// TODO Auto-generated constructor stub
 	}
 
-	public SupplierRespone(String code, String mesage, List<Supplier> suppliers) {
+	public SupplierRespone(String code, String message, List<Supplier> suppliers) {
 		super();
 		this.code = code;
-		this.mesage = mesage;
+		this.message = message;
 		this.suppliers = suppliers;
 	}
 
@@ -32,12 +32,12 @@ public class SupplierRespone{
 		this.code = code;
 	}
 
-	public String getMesage() {
-		return mesage;
+	public String getMessage() {
+		return message;
 	}
 
-	public void setMesage(String mesage) {
-		this.mesage = mesage;
+	public void setMessage(String message) {
+		this.message = message;
 	}
 
 	public List<Supplier> getSuppliers() {
