@@ -10,7 +10,8 @@ public enum DataRtnCode {
 	INSERT_REPEAT_DATA("400","無法新增重複資料"),
 	EMAIL_EXITS("400","email 格式錯誤"),
 	PHONE_EXITS("400","電話 格式錯誤"),
-	UPDATE_ERROR("400","更新錯誤");
+	UPDATE_ERROR("400","更新錯誤"),
+	COMPILED_REPEAT_DATA("400","統一編號已存在");
 	
 	private String code;
 

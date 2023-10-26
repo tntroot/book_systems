@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -44,17 +46,12 @@ public class SupplierServiceImpl implements SupplierService{
 			return respone;
 		}
 		
-		List<Supplier> thisSupplier = supplierDao.findByCompileds(supplier.getCompiled());
-		if(!CollectionUtils.isEmpty(thisSupplier)) {
-			return new SupplierRespone(DataRtnCode.INSERT_REPEAT_DATA.getCode(),DataRtnCode.INSERT_REPEAT_DATA.getMessage(),null);
-		}
-		
 		int insertAdd = supplierDao.inserSupplier(supplier.getName(),supplier.getCompiled(),supplier.getEmail(),supplier.getPhone(),supplier.getLocation_id(),supplier.getLocation_name());
 		if(insertAdd == 0) {
 			return new SupplierRespone(DataRtnCode.INSERT_DATA.getCode(),DataRtnCode.INSERT_DATA.getMessage(),null);
 		}
 		
-		thisSupplier = supplierDao.findByCompileds(supplier.getCompiled());
+		List<Supplier> thisSupplier = supplierDao.findByCompileds(supplier.getCompiled());
 		
 		return new SupplierRespone(DataRtnCode.SUCCESSFUL.getCode(),DataRtnCode.SUCCESSFUL.getMessage(),thisSupplier);
 	}
@@ -82,6 +79,11 @@ public class SupplierServiceImpl implements SupplierService{
 			return new SupplierRespone(DataRtnCode.PHONE_EXITS.getCode(),DataRtnCode.PHONE_EXITS.getMessage(),null);
 		}
 		
+		List<Supplier> thisSupplier = supplierDao.findByCompileds(supplier.getCompiled());
+		if(!CollectionUtils.isEmpty(thisSupplier)) {
+			return new SupplierRespone(DataRtnCode.COMPILED_REPEAT_DATA.getCode(),DataRtnCode.COMPILED_REPEAT_DATA.getMessage(),null);
+		}
+		
 		return new SupplierRespone(DataRtnCode.SUCCESSFUL.getCode(),DataRtnCode.SUCCESSFUL.getMessage(),null);
 	}
 
@@ -93,16 +95,19 @@ public class SupplierServiceImpl implements SupplierService{
 			return respone;
 		}
 		
-		String oldSe_num = supplier.getSerial_num().substring(1, supplier.getSerial_num().length());
-		String NewSe_num = supplier.getLocation_id() + oldSe_num;
+//		List<Supplier> all = supplierDao.findAll();
+//		List<Supplier> findall = all.stream().filter( i -> i.getLocation_id().equals(supplier.getLocation_id().substring(0,1))).collect(Collectors.toList());
+//		
+//		String oldSe_num = supplier.getSerial_num().substring(1, supplier.getSerial_num().length());
+//		String NewSe_num = supplier.getLocation_id() + String.format("%05d", findall.size()+1);
 		
-		if(supplierDao.updateThisSupplier(NewSe_num,supplier.getName(), supplier.getCompiled(), 
+		if(supplierDao.updateThisSupplier(supplier.getName(), supplier.getCompiled(), 
 				supplier.getEmail(), supplier.getPhone(), supplier.getLocation_id(), 
-				supplier.getLocation_name(), supplier.getSerial_num())==0) {
+				supplier.getLocation_name(),supplier.getSerial_num())==0) {
 			
 			return new SupplierRespone(DataRtnCode.UPDATE_ERROR.getCode(),DataRtnCode.UPDATE_ERROR.getMessage(),null);
 		}
-		List<Supplier> arr = supplierDao.findBySerialNum(NewSe_num);
+		List<Supplier> arr = supplierDao.findBySerialNum(supplier.getSerial_num());
  		return new SupplierRespone(DataRtnCode.SUCCESSFUL.getCode(),DataRtnCode.SUCCESSFUL.getMessage(),arr);
 	}
 
