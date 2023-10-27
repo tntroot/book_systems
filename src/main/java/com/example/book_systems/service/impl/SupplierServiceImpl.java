@@ -16,6 +16,7 @@ import com.example.book_systems.constans.DataRtnCode;
 import com.example.book_systems.entity.Supplier;
 import com.example.book_systems.repository.SupplierDao;
 import com.example.book_systems.service.ifs.SupplierService;
+import com.example.book_systems.vo.requery.SupplierEditCompiledRequery;
 import com.example.book_systems.vo.requery.SupplierSearchRequery;
 import com.example.book_systems.vo.respone.SupplierRespone;
 
@@ -41,7 +42,7 @@ public class SupplierServiceImpl implements SupplierService{
 	@Override
 	public SupplierRespone addSupplier(Supplier supplier) {
 		
-		SupplierRespone respone = checkAddUpdateData(supplier);
+		SupplierRespone respone = checkAddUpdateData(supplier,0);
 		if(!respone.getCode().equals("200")) {
 			return respone;
 		}
@@ -57,7 +58,7 @@ public class SupplierServiceImpl implements SupplierService{
 	}
 	
 	// 檢查更新/新增內容
-	private SupplierRespone checkAddUpdateData(Supplier supplier) {
+	private SupplierRespone checkAddUpdateData(Supplier supplier, Integer oldCompiled) {
 		
 		if(supplier == null ) {
 			return new SupplierRespone(DataRtnCode.INPUT_NULL.getCode(),DataRtnCode.INPUT_NULL.getMessage(),null);
@@ -80,7 +81,7 @@ public class SupplierServiceImpl implements SupplierService{
 		}
 		
 		List<Supplier> thisSupplier = supplierDao.findByCompileds(supplier.getCompiled());
-		if(!CollectionUtils.isEmpty(thisSupplier)) {
+		if(!CollectionUtils.isEmpty(thisSupplier) && !oldCompiled.equals(supplier.getCompiled())) {
 			return new SupplierRespone(DataRtnCode.COMPILED_REPEAT_DATA.getCode(),DataRtnCode.COMPILED_REPEAT_DATA.getMessage(),null);
 		}
 		
@@ -88,9 +89,9 @@ public class SupplierServiceImpl implements SupplierService{
 	}
 
 	@Override
-	public SupplierRespone updateSupplier(Supplier supplier) {
+	public SupplierRespone updateSupplier(Supplier supplier,Integer oldCompiled) {
 		
-		SupplierRespone respone = checkAddUpdateData(supplier);
+		SupplierRespone respone = checkAddUpdateData(supplier, oldCompiled);
 		if(!respone.getCode().equals("200")) {
 			return respone;
 		}

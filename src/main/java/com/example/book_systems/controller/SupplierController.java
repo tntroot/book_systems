@@ -18,6 +18,7 @@ import com.example.book_systems.entity.Location;
 import com.example.book_systems.entity.Supplier;
 import com.example.book_systems.repository.LocationDao;
 import com.example.book_systems.service.ifs.SupplierService;
+import com.example.book_systems.vo.requery.SupplierEditCompiledRequery;
 import com.example.book_systems.vo.requery.SupplierSearchRequery;
 import com.example.book_systems.vo.respone.LocationRespone;
 import com.example.book_systems.vo.respone.SupplierRespone;
@@ -62,7 +63,8 @@ public class SupplierController {
 	}
 	
 	@PostMapping(value = "update/supplier")
-	public SupplierRespone updateSupplier(@RequestBody Supplier supplier) {
-		return supplierService.updateSupplier(supplier);
+	public SupplierRespone updateSupplier(@RequestBody SupplierEditCompiledRequery supplier) {
+		
+		return supplierService.updateSupplier(supplier.getSupplier(),supplier.getOldCompiled());
 	}
 }
