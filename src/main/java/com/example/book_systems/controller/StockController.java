@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.book_systems.entity.BookTag;
 import com.example.book_systems.entity.Stock;
 import com.example.book_systems.service.ifs.StockService;
+import com.example.book_systems.vo.requery.SearchStockRequery;
 import com.example.book_systems.vo.respone.BookTagRespone;
 import com.example.book_systems.vo.respone.StockRespone;
 
@@ -35,6 +36,11 @@ public class StockController {
 	@PostMapping(value = "add/stock")
 	private StockRespone addStock(@RequestBody Stock stock) {
 		return stockService.addStock(stock);
+	}
+	
+	@PostMapping(value = "search/stock")
+	private StockRespone searchStock(@RequestBody SearchStockRequery requery) {
+		return stockService.searchStock(requery);
 	}
 	
 }
