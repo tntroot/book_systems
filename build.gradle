@@ -33,6 +33,20 @@ dependencies {
 	// jackson 不支持時間類型，需而外引入
 	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.15.3'
 	
+	// https://mvnrepository.com/artifact/commons-dbutils/commons-dbutils
+	// 使用條件式資料庫語法
+	//implementation 'commons-dbutils:commons-dbutils:1.8.1'
+	
+	// https://mvnrepository.com/artifact/com.mchange/c3p0
+	//implementation 'com.mchange:c3p0:0.9.5.5'
+	
+	//implementation 'c3p0:c3p0:0.9.1.2'
+	
+	// https://mvnrepository.com/artifact/org.springframework/spring-jdbc
+	implementation 'org.springframework:spring-jdbc'
+	
+
+	
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 

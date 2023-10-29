@@ -4,7 +4,7 @@ public class SearchStockRequery {
 
 	private String iSBN;
 	
-	private String name;
+	private String bookName;
 	
 	private String user;
 	
@@ -13,20 +13,25 @@ public class SearchStockRequery {
 	private int inventory;
 	
 	private String tag;
+	
+	// 當前頁數
+	private PageReuqery page;
 
 	public SearchStockRequery() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public SearchStockRequery(String iSBN, String name, String user, String compare, int inventory, String tag) {
+	public SearchStockRequery(String iSBN, String bookName, String user, String compare, int inventory, String tag,
+			PageReuqery page) {
 		super();
 		this.iSBN = iSBN;
-		this.name = name;
+		this.bookName = bookName;
 		this.user = user;
 		this.compare = compare;
 		this.inventory = inventory;
 		this.tag = tag;
+		this.page = page;
 	}
 
 	public String getiSBN() {
@@ -37,12 +42,12 @@ public class SearchStockRequery {
 		this.iSBN = iSBN;
 	}
 
-	public String getName() {
-		return name;
+	public String getBookName() {
+		return bookName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setBookName(String bookName) {
+		this.bookName = bookName;
 	}
 
 	public String getUser() {
@@ -76,7 +81,13 @@ public class SearchStockRequery {
 	public void setTag(String tag) {
 		this.tag = tag;
 	}
-	
-	
-	
+
+	public PageReuqery getPage() {
+		return page;
+	}
+
+	public void setPage(PageReuqery page) {
+		this.page = page;
+	}
+
 }
