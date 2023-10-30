@@ -8,6 +8,8 @@ public enum DataRtnCode {
 	INPUT_NULL("400","輸入欄位不可為空"),
 	INSERT_DATA("400","新增資料錯誤"),
 	INSERT_REPEAT_DATA("400","無法新增重複資料"),
+	EDIT_REPEAT_DATA("400","無法更新重複資料"),
+	TAG_REPEAT_DATA("400","無法新增重複 Tag"),
 	EMAIL_EXITS("400","email 格式錯誤"),
 	PHONE_EXITS("400","電話 格式錯誤"),
 	UPDATE_ERROR("400","更新錯誤"),

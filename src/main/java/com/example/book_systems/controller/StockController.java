@@ -25,6 +25,7 @@ import com.example.book_systems.entity.BookTag;
 import com.example.book_systems.entity.Stock;
 import com.example.book_systems.service.ifs.StockService;
 import com.example.book_systems.vo.requery.SearchStockRequery;
+import com.example.book_systems.vo.requery.StockEditResquery;
 import com.example.book_systems.vo.respone.BookTagRespone;
 import com.example.book_systems.vo.respone.StockRespone;
 
@@ -75,4 +76,8 @@ public class StockController {
 		return new StockRespone(DataRtnCode.SUCCESSFUL.getCode(), DataRtnCode.SUCCESSFUL.getMessage(), res);
 	}
 	
+	@PostMapping(value = "edit/stock")
+	private StockRespone editStock(@RequestBody StockEditResquery stockEditResquery) {
+		return stockService.editStock(stockEditResquery);
+	}
 }
