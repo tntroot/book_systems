@@ -17,9 +17,9 @@ public interface StockDao extends JpaRepository<Stock, String> {
 	public List<Stock> findByiSBN(String ISBN);
 	
 	@Query(value = "select ISBN, book_name, user, price, sales, inventory, min_inventory, tag from stock "
-			+ " where ISBN = (case when :input_iSBN is null then ISBN else :input_iSBN end)"
-			+ " and book_name = (case when :input_bookName is null then book_name else :input_bookName end)"
-			+ " and user = (case when :input_user is null then user else :input_user end)"
+			+ " where ISBN like concat('%', :input_iSBN ,'%')"
+			+ " and book_name like concat('%', :input_bookName ,'%')"
+			+ " and user like concat('%', :input_user ,'%')"
 			+ " and if(:input_compare = '>=', inventory >= :input_inventory, inventory <= :input_inventory)"
 			+ " order by inventory asc"
 			,nativeQuery = true)

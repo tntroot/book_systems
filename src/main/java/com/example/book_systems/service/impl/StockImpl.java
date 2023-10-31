@@ -87,16 +87,6 @@ public class StockImpl implements StockService{
 			return new StockRespone(DataRtnCode.DATA_ERROR.getCode(),DataRtnCode.DATA_ERROR.getMessage(),null);
 		}
 		
-		if(!StringUtils.hasText(requery.getiSBN())) {
-			requery.setiSBN(null);
-		}
-		if(!StringUtils.hasText(requery.getBookName())) {
-			requery.setBookName(null);
-		}
-		if(!StringUtils.hasText(requery.getUser())) {
-			requery.setUser(null);
-		}
-		
 		List<Stock> arr = stockDao.searchStock(requery.getiSBN(), requery.getBookName(), requery.getUser(), requery.getCompare(), requery.getInventory());
 		
 		if(CollectionUtils.isEmpty(arr)) {
