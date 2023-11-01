@@ -130,7 +130,7 @@ public class StockImpl implements StockService{
 			return new StockRespone(DataRtnCode.INPUT_NULL.getCode(),DataRtnCode.INPUT_NULL.getMessage(),null);
 		}
 		
-		if(stockDao.existsById(resquery.getStock().getiSBN())) {
+		if(stockDao.existsById(resquery.getStock().getiSBN()) && !resquery.getStock().getiSBN().equals(resquery.getOldISBN())) {
 			return new StockRespone(DataRtnCode.EDIT_REPEAT_DATA.getCode(),DataRtnCode.EDIT_REPEAT_DATA.getMessage(),null);
 		}
 		
