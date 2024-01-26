@@ -44,14 +44,18 @@ public class User {
 	// 鎖定狀態
 	@Column(name = "locked_status")
 	private int locked_status;
-
+	
+	// 頭像
+	@Column(name = "img")
+	private String img;
+	
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
 	public User(String account, String user_name, String email, String pwd, LocalDate born, int manager,
-			LocalDateTime redate, int locked_status) {
+			LocalDateTime redate, int locked_status, String img) {
 		super();
 		this.account = account;
 		this.user_name = user_name;
@@ -61,6 +65,7 @@ public class User {
 		this.manager = manager;
 		this.redate = redate;
 		this.locked_status = locked_status;
+		this.img = img;
 	}
 
 	public String getAccount() {
@@ -126,6 +131,16 @@ public class User {
 	public void setLocked_status(int locked_status) {
 		this.locked_status = locked_status;
 	}
+
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
+	
 	
 	
 

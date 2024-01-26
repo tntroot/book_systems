@@ -23,6 +23,8 @@ public class UserShow {
 	private LocalDateTime redate;
 	
 	private int locked_status;
+	
+	private String img;
 
 	public UserShow() {
 		super();
@@ -30,7 +32,7 @@ public class UserShow {
 	}
 
 	public UserShow(String account, String user_name, String email, LocalDate born, int manager, LocalDateTime redate,
-			int locked_status) {
+			int locked_status, String img) {
 		super();
 		this.account = account;
 		this.user_name = user_name;
@@ -39,6 +41,7 @@ public class UserShow {
 		this.manager = manager;
 		this.redate = redate;
 		this.locked_status = locked_status;
+		this.img = img;
 	}
 
 	public String getAccount() {
@@ -96,6 +99,16 @@ public class UserShow {
 	public void setLocked_status(int locked_status) {
 		this.locked_status = locked_status;
 	}
+
+	public String getImg() {
+		return img;
+	}
+
+	public void setImg(String img) {
+		this.img = img;
+	}
+
+	
 
 	
 	

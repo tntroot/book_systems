@@ -1,8 +1,22 @@
 package com.example.book_systems.service.impl;
 
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.Base64;
 import java.util.Optional;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.FileCacheImageInputStream;
 import javax.mail.internet.MimeMessage;
+import javax.persistence.Convert;
+import javax.xml.bind.DatatypeConverter;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -48,7 +62,17 @@ public class UserServiceImpl implements UserService{
 		if(op.isEmpty()) {
 			return new UserShowRespone(UserRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
 		}
-		
+		if(!op.get().getImg().isEmpty()) {
+			try {
+				byte[] byteData = Files.readAllBytes(Paths.get(op.get().getImg()));
+				String base64String = Base64.getEncoder().encodeToString(byteData);
+				op.get().setImg(base64String);
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+		}
+
 		// BeanUtils.copyProperties(User.class,UserShow.class);
 		
 		try {
@@ -232,9 +256,21 @@ public class UserServiceImpl implements UserService{
 //		if(!op.get().getEmail().equals(user.getEmail())) {
 //			return new UserShowRespone(UserRtnCode.EMAIL_UN_SUCCESSFUL.getCode(),UserRtnCode.EMAIL_UN_SUCCESSFUL.getMessage(),null);
 //		}
+		
+		// 判斷圖片為空
+		String img = "src/main/resources/static/img/userAccount/" + user.getAccount() + ".png";
+		if(!user.getImg().isEmpty()) {
+			
+			// 圖片儲存
+			if (!imgUpdate(user.getImg(), img)) {
+				return new UserShowRespone(UserRtnCode.UPDATE_IMG_ERROR.getCode(),UserRtnCode.UPDATE_IMG_ERROR.getMessage(),null);
+			};
+		}
+		
 		User thisEditUser = op.get();
 		thisEditUser.setBorn(user.getBorn());
 		thisEditUser.setUser_name(user.getUser_name());
+		thisEditUser.setImg(img);
 		
 //		user.setPwd(op.get().getPwd());
 //		user.setRedate(op.get().getRedate());
@@ -280,5 +316,23 @@ public class UserServiceImpl implements UserService{
 		
 		return new MsgRes(UserRtnCode.SUCCESSFUL.getCode(),UserRtnCode.SUCCESSFUL.getMessage());
 	}
-
+	
+	
+	
+	private boolean imgUpdate(String imgUrl, String newImgUrl) {
+		
+		try {
+			byte[] imgdata = DatatypeConverter.parseBase64Binary(imgUrl.substring(imgUrl.indexOf(",") + 1));
+			
+			BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imgdata));
+			ImageIO.write(bufferedImage, "png", new File(newImgUrl));
+			
+			return true;
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			
+			return false;
+		}
+	}
 }

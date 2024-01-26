@@ -18,7 +18,8 @@ public enum UserRtnCode {
 	DATA_ERROR("400","資料錯誤"),
 	TOKEN_NOT_FOUNT("400","無此驗證碼或驗證碼已超時"),
 	TOKEN_ERROR("400","驗證碼錯誤"),
-	TOKEN_CHECK("400","驗證超時");
+	TOKEN_CHECK("400","驗證超時"),
+	UPDATE_IMG_ERROR("400", "上傳圖片失敗");
 	
 	private String code;
 	
