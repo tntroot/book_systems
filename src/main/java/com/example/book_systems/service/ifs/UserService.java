@@ -1,6 +1,7 @@
 package com.example.book_systems.service.ifs;
 
 import com.example.book_systems.entity.User;
+import com.example.book_systems.vo.respone.AllUserShowRespone;
 import com.example.book_systems.vo.respone.MsgRes;
 import com.example.book_systems.vo.respone.UserRespone;
 import com.example.book_systems.vo.respone.UserShowRespone;
@@ -20,4 +21,6 @@ public interface UserService {
 	public UserShowRespone editUser(User user);
 	
 	public MsgRes editPwd(String account, String oldPwd, String newPwd);
+	
+	public AllUserShowRespone searchAllUser();
 }

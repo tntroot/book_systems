@@ -9,7 +9,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 
 import javax.imageio.ImageIO;
@@ -23,6 +25,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
 import com.example.book_systems.constans.UserRtnCode;
@@ -30,6 +33,7 @@ import com.example.book_systems.entity.User;
 import com.example.book_systems.entity.UserShow;
 import com.example.book_systems.repository.UserDao;
 import com.example.book_systems.service.ifs.UserService;
+import com.example.book_systems.vo.respone.AllUserShowRespone;
 import com.example.book_systems.vo.respone.MsgRes;
 import com.example.book_systems.vo.respone.UserRespone;
 import com.example.book_systems.vo.respone.UserShowRespone;
@@ -62,18 +66,11 @@ public class UserServiceImpl implements UserService{
 		if(op.isEmpty()) {
 			return new UserShowRespone(UserRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
 		}
-		if(!op.get().getImg().isEmpty()) {
-			try {
-				byte[] byteData = Files.readAllBytes(Paths.get(op.get().getImg()));
-				String base64String = Base64.getEncoder().encodeToString(byteData);
-				op.get().setImg(base64String);
-			} catch (IOException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
+		
+		String Base64Img = getImg(op.get().getImg());
+		if(!Base64Img.isEmpty()) {
+			op.get().setImg(Base64Img);
 		}
-
-		// BeanUtils.copyProperties(User.class,UserShow.class);
 		
 		try {
 			UserShow userShow = userToUserShow(op.get());
@@ -258,7 +255,7 @@ public class UserServiceImpl implements UserService{
 //		}
 		
 		// 判斷圖片為空
-		String img = "src/main/resources/static/img/userAccount/" + user.getAccount() + ".png";
+		String img = "src/main/resources/static/img/userAccount/" + user.getAccount() + ".jpg";
 		if(!user.getImg().isEmpty()) {
 			
 			// 圖片儲存
@@ -318,21 +315,58 @@ public class UserServiceImpl implements UserService{
 	}
 	
 	
-	
+	// 將 Base64 圖 存到本地
 	private boolean imgUpdate(String imgUrl, String newImgUrl) {
-		
 		try {
-			byte[] imgdata = DatatypeConverter.parseBase64Binary(imgUrl.substring(imgUrl.indexOf(",") + 1));
-			
+			byte[] imgdata = DatatypeConverter.parseBase64Binary(imgUrl.substring(imgUrl.indexOf(",") + 1));		
 			BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(imgdata));
-			ImageIO.write(bufferedImage, "png", new File(newImgUrl));
-			
+			ImageIO.write(bufferedImage, "png", new File(newImgUrl));		
 			return true;
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
-			e1.printStackTrace();
-			
+			e1.printStackTrace();		
 			return false;
 		}
+	}
+	
+	// 將 本地圖 轉 Base64
+	private String getImg(String oldImg) {
+		if(StringUtils.hasText(oldImg)) {
+			try {
+				byte[] byteData = Files.readAllBytes(Paths.get(oldImg));
+				String base64String = Base64.getEncoder().encodeToString(byteData);
+				return base64String;
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+				return "";
+			}
+		}
+		return "";
+	}
+
+	@Override
+	public AllUserShowRespone searchAllUser() {
+		
+		List<User> alluser = userDao.findAll();
+		if(CollectionUtils.isEmpty(alluser)) {
+			return new AllUserShowRespone(UserRtnCode.NOT_SEARCH.getCode(), UserRtnCode.NOT_SEARCH.getMessage(), null);
+		}
+		
+		List<UserShow> allUserShows = new ArrayList<UserShow>();
+		
+		alluser.forEach(item -> {
+			UserShow thisItem = new UserShow();
+			try {
+				thisItem = userToUserShow(item);
+				thisItem.setImg(getImg(item.getImg()));
+			} catch (Exception e) {
+				// TODO: handle exception
+				System.out.println(e);
+			}
+			allUserShows.add(thisItem);
+		});
+		
+		return new AllUserShowRespone(UserRtnCode.SUCCESSFUL.getCode(), UserRtnCode.SUCCESSFUL.getMessage(), allUserShows);
 	}
 }

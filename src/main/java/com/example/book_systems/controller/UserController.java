@@ -17,6 +17,7 @@ import com.example.book_systems.service.ifs.UserService;
 import com.example.book_systems.vo.requery.LoginRequery;
 import com.example.book_systems.vo.requery.ReplacePwdRequery;
 import com.example.book_systems.vo.requery.UserChangePwdRequery;
+import com.example.book_systems.vo.respone.AllUserShowRespone;
 import com.example.book_systems.vo.respone.MsgRes;
 import com.example.book_systems.vo.respone.UserRespone;
 import com.example.book_systems.vo.respone.UserShowRespone;
@@ -146,6 +147,16 @@ public class UserController {
 		}
 		
 		return userService.editPwd(userPwd.getAccount(),userPwd.getOldPwd(),userPwd.getNewPwd());
+	}
+	
+	@GetMapping(value = "setting/searchAllUser")
+	public AllUserShowRespone searchAlluser(HttpSession http) {
+		String account = (String) http.getAttribute("account");
+		if(!StringUtils.hasText(account)) {
+			return new AllUserShowRespone(UserRtnCode.ACCOUNT_NOT_FOUNT.getCode(),UserRtnCode.ACCOUNT_NOT_FOUNT.getMessage(),null);
+		}
+		
+		return userService.searchAllUser();
 	}
 
 }
